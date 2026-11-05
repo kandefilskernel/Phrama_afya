@@ -1,0 +1,77 @@
+# Seule la plateforme est exposée. Notifications et Échéancier ne sont joignables que sur le réseau interne.
+x-jeton: &jeton
+  JETON_INTERNE: ${JETON_INTERNE:?Copiez .env.exemple en .env et définissez JETON_INTERNE}
+
+services:
+  plateforme:
+    build: .
+    environment:
+      <<: *jeton
+      JETON_AMORCAGE: ${JETON_AMORCAGE:?Définissez JETON_AMORCAGE dans .env}
+      # Secret partagé avec le front web : prouve que l'adresse du client transmise vient bien de lui.
+      JETON_BFF: ${JETON_BFF:?Définissez JETON_BFF dans .env}
+    ports:
+      - "3000:3000"
+    volumes:
+      - plateforme:/data
+    restart: unless-stopped
+
+  notifications:
+    build:
+      context: .
+      dockerfile: services/notifications/Dockerfile
+    environment:
+      <<: *jeton
+      PLATEFORME_URL: http://plateforme:3000
+      # journal (par défaut, aucun envoi), africastalking ou twilio. Voir .env.exemple.
+      FOURNISSEUR: ${FOURNISSEUR:-journal}
+      SMS_EXPEDITEUR: ${SMS_EXPEDITEUR:-}
+      SMS_PLAFOND_JOUR: ${SMS_PLAFOND_JOUR:-}
+      AT_USERNAME: ${AT_USERNAME:-}
+      AT_API_KEY: ${AT_API_KEY:-}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+    volumes:
+      - notifications:/data
+    depends_on:
+      plateforme:
+        condition: service_healthy
+    restart: unless-stopped
+
+  echeancier:
+    build:
+      context: .
+      dockerfile: services/echeancier/Dockerfile
+    environment:
+      <<: *jeton
+      PLATEFORME_URL: http://plateforme:3000
+      NOTIFICATIONS_URL: http://notifications:3001
+    volumes:
+      - echeancier:/data
+    depends_on:
+      plateforme:
+        condition: service_healthy
+      notifications:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Interface web (Next.js). Elle parle à la plateforme par le réseau interne : les jetons des utilisateurs
+  # restent côté serveur, dans un cookie httpOnly.
+  web:
+    build: ../web
+    environment:
+      PLATEFORME_URL: http://plateforme:3000
+      JETON_BFF: ${JETON_BFF:?Définissez JETON_BFF dans .env}
+      # Mettre COOKIE_SECURE=1 dès que le site est servi en HTTPS.
+      COOKIE_SECURE: ${COOKIE_SECURE:-0}
+    ports:
+      - "3100:3100"
+    depends_on:
+      plateforme:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  plateforme:
+  notifications:
+  echeancier:

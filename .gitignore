@@ -1,0 +1,27 @@
+# Secrets et configuration locale
+.env
+.env.*
+!.env.exemple
+
+# Données générées (comptes, sessions, codes SMS de démonstration)
+donnees/
+donnees-demo/
+**/donnees-demo/
+**/data/
+
+# Dépendances et builds
+node_modules/
+.next/
+build/
+dist/
+.dart_tool/
+*.log
+
+# Document interne, non destiné au dépôt
+*.pptx
+
+# Éditeur / système
+.idea/
+.vscode/
+.DS_Store
+*.iml

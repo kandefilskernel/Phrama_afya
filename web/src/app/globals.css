@@ -1,0 +1,100 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+/*
+ * Identité : un vert profond, sobre et rassurant, et un accent chaud « lumière » (Nuru = lumière) réservé
+ * aux repères importants. Les neutres sont légèrement teintés de vert pour s'accorder à la marque.
+ */
+@theme {
+  --color-marque-50: #effaf5;
+  --color-marque-100: #d6f2e5;
+  --color-marque-200: #aee4cc;
+  --color-marque-300: #7ccfae;
+  --color-marque-400: #46b58f;
+  --color-marque-500: #1f9a76;
+  --color-marque-600: #0f7b61;
+  --color-marque-700: #0c6350;
+  --color-marque-800: #0a4f41;
+  --color-marque-900: #083f35;
+  --color-marque-950: #04251f;
+
+  --color-lumiere-50: #fff8e8;
+  --color-lumiere-100: #ffedc2;
+  --color-lumiere-400: #f8b73e;
+  --color-lumiere-500: #f5a524;
+  --color-lumiere-700: #b46b08;
+
+  --color-fond: #f4f7f6;
+  --color-encre: #0f1f1a;
+
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --shadow-carte: 0 1px 2px rgb(16 24 40 / 0.04), 0 1px 3px rgb(16 24 40 / 0.04);
+  --shadow-releve: 0 4px 12px rgb(16 24 40 / 0.06), 0 2px 4px rgb(16 24 40 / 0.04);
+  --shadow-vitrine: 0 24px 48px -12px rgb(4 37 31 / 0.25);
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-fond);
+  color: var(--color-encre);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss03";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Titres : un peu plus serrés, c'est ce qui donne l'allure « produit ». */
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: var(--color-marque-200);
+  color: var(--color-marque-950);
+}
+
+button,
+select,
+input,
+textarea {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-marque-600);
+  outline-offset: 2px;
+}
+
+/* Écrans de chargement : un scintillement discret. */
+@keyframes scintillement {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+.squelette {
+  background: linear-gradient(90deg, #e8eeec 25%, #f3f6f5 37%, #e8eeec 63%);
+  background-size: 400% 100%;
+  animation: scintillement 1.6s ease infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .squelette {
+    animation: none;
+  }
+  * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

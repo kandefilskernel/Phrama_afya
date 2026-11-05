@@ -1,0 +1,6 @@
+test
+**/test
+donnees*
+node_modules
+.env
+*.md
