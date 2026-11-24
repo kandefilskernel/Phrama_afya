@@ -4,8 +4,11 @@
 !.env.exemple
 
 # Données générées (comptes, sessions, codes SMS de démonstration)
-donnees/
-donnees-demo/
+# Limité aux dossiers de données des services (DATA_DIR) : une règle « donnees/ »
+# seule excluait aussi le code source de mobile/lib/donnees/.
+validation-depots/donnees/
+validation-depots/donnees-*/
+validation-depots/services/*/donnees*/
 **/donnees-demo/
 **/data/
 
